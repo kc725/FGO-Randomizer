@@ -1,0 +1,208 @@
+﻿@model UserListViewModel
+
+
+@{
+    ViewData["Title"] = "Roll Index";
+}
+
+<head>
+    <script language="JavaScript">
+       
+        
+
+        function toggleAll() {
+            var s = document.getElementsByName("Servant");
+            var checkboxes = document.getElementsByName("ServantCheckbox");
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                if (!(s[i].classList.contains("d-none"))) {
+                    var s_check = checkboxes[i].getElementsByTagName("input")[0]
+                    s_check.checked = true;
+                }
+            }
+        }
+
+        function detoggleAll() {
+            var s = document.getElementsByName("Servant");
+            var checkboxes = document.getElementsByName("ServantCheckbox");
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                if (!(s[i].classList.contains("d-none"))) {
+                    var s_check = checkboxes[i].getElementsByTagName("input")[0]
+                    s_check.checked = false;
+                }
+            }
+        }
+
+        function toggleNA(source) {
+            var s_NA, s, s_image;
+            s = document.getElementsByName("Servant");
+            for (var i = 0, n = s.length; i < n; i++) {
+                s_NA = s[i].getElementsByTagName("input")[4];
+                s_image = s[i].getElementsByTagName("label")[0].getElementsByTagName("img")[0];
+                if (!(s_NA.value == "True")) {
+                    if (source.checked) {
+                        s[i].classList.add("d-none");
+                        s_image.classList.add("d-none");
+                    }
+                    else {
+                        s[i].classList.remove("d-none");
+                        s_image.classList.remove("d-none");
+                    }
+                }
+            }
+        }
+
+        function toggleBronze(source) {
+            var rarity, s;
+            var checkboxes = document.getElementsByName("ServantCheckbox");
+            s = document.getElementsByName("Servant");
+            for (var i = 0, n = s.length; i < n; i++) {
+                rarity = s[i].getElementsByTagName("input")[2];
+                s_image = s[i].getElementsByTagName("label")[0].getElementsByTagName("img")[0];
+                if (rarity.value < 3) {
+                    var s_check = checkboxes[i].getElementsByTagName("input")[0]
+                    s_check.checked = source.checked;
+                }
+            }
+        }
+
+        function toggleSilver(source) {
+            var rarity, s;
+            var checkboxes = document.getElementsByName("ServantCheckbox");
+            s = document.getElementsByName("Servant");
+            for (var i = 0, n = s.length; i < n; i++) {
+                rarity = s[i].getElementsByTagName("input")[2];
+                s_image = s[i].getElementsByTagName("label")[0].getElementsByTagName("img")[0];
+                if (rarity.value == 3) {
+                    var s_check = checkboxes[i].getElementsByTagName("input")[0]
+                    s_check.checked = source.checked;
+                }
+            }
+        }
+
+        function nameSearch() {
+            var input, filter, l, s_image, i, s_name;
+            input = document.getElementById('searchName');
+            filter = input.value.toUpperCase();
+            l = document.getElementsByName("ServantLabel");
+            for (i = 0; i < l.length; i++) {
+                s_image = l[i].getElementsByTagName("img")[0];
+                s_name = s_image.alt;
+                if (s_name.toUpperCase().indexOf(filter) < 0) {
+                    l[i].classList.add("d-none");
+                    s_image.classList.add("d-none");
+                }
+                else {
+                    l[i].classList.remove("d-none");
+                    s_image.classList.remove("d-none");
+                }
+            }
+        }
+
+        function filterClass() {
+            var input, c, s, l, s_image, i, s_class;
+            input = document.getElementById("selectClass");
+            c = input.options[input.selectedIndex].text;
+            s = document.getElementsByName("Servant");
+            l = document.getElementsByName("ServantLabel");
+            for (i = 0; i < l.length; i++) {
+                s_image = l[i].getElementsByTagName("img")[0];
+                s_class = s[i].getElementsByTagName("input")[3];
+                if (c == "All") {
+                    s[i].classList.remove("d-none");
+                    s_image.classList.remove("d-none");
+                }
+                else {
+                    if (s_class.value != c) {
+                        s[i].classList.add("d-none");
+                        s_image.classList.add("d-none");
+                    }
+                    else {
+                        s[i].classList.remove("d-none");
+                        s_image.classList.remove("d-none");
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .flex-container {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: flex-start;
+            align-items: flex-start;
+            align-content: flex-start;
+        }
+
+        input[type="checkbox"][id^="ServantList"] {
+            display: none;
+        } 
+
+        :checked + label img {
+            opacity: 0.4;
+            filter: alpha(opacity=40);
+        }
+    </style>
+</head>
+
+<div class="container-fluid mt-4">
+    <form asp-controller="Roll" asp-action="Go" method="post">
+        <div class="row clearfix" id="topSearch">
+            <label for="selectClass" class="col-form-label pr-3">
+                Class:
+            </label>
+            <select class="form-control col-3" asp-items="Model.Classes" id="selectClass" onclick="filterClass()">
+                <option value="">All</option>
+            </select>
+
+            <input class="form-control col-3" type="text" id="searchName" onkeyup="nameSearch()" placeholder="Search Servant Name..." />
+        </div>
+        <div class="row clearfix" id="bottomFilter">
+            <label for="filterNA" class="col-form-label pr-3 mt-3">
+                NA-Only:
+                <input type="checkbox" onclick="toggleNA(this)" />
+            </label>
+            <label for="bronze" class="col-form-label pr-3 mt-3">
+                Bronze:
+                <input type="checkbox" onclick="toggleBronze(this)" />
+            </label>
+            <label for="silver" class="col-form-label pr-3 mt-3">
+                Silver:
+                <input type="checkbox" onclick="toggleSilver(this)" />
+            </label>
+            <button type="button" class="btn btn-secondary my-3 mr-3" onclick="toggleAll()">Select All</button>
+            <button type="button" class="btn btn-secondary my-3 mr-3" onclick="detoggleAll()">Deselect All</button>
+            <input type="submit" id="Gobtn" value="Go" name="Go" class="btn btn-primary my-3 mr-3 " />
+            <input type="submit" formaction="Roll/Draft" id="Draftbtn" value="Draft" name="Draft" class="btn btn-info my-3 float-right" />
+        </div>
+        <div id="userChoices" class="row clearfix pb-3">
+            <label for="enemyClass" class="col-form-label pr-3 ">
+                Enemy Class:
+            </label>
+            <select class="form-control col-3" asp-items="Model.Classes" asp-for="enemyClass">
+                <option value="">All</option>
+            </select>
+        </div>
+        <div class="flex-container">
+            @for (int i = 0; i < Model.ServantList.Count(); i++)
+            {
+                <div name="Servant">
+                    <input type="hidden" asp-for="ServantList[i].servant.Id" />
+                    <input type="hidden" asp-for="ServantList[i].servant.Name" />
+                    <input type="hidden" asp-for="ServantList[i].servant.Rarity" />
+                    <input type="hidden" asp-for="ServantList[i].servant.Class" />
+                    <input type="hidden" asp-for="ServantList[i].servant.NA" />
+                    <input type="hidden" asp-for="ServantList[i].servant.Card" />
+                    <input type="hidden" asp-for="ServantList[i].servant.Role" />
+                    <div name="ServantCheckbox">
+                        <input type="checkbox" class="form-check-input" asp-for="@(Model.ServantList[i].IsChecked)" />
+                        <label name="ServantLabel" for=@("ServantList_"+ Model.ServantList[i].IsChecked + "__IsChecked") class="form-check-label">
+                            <img class="img-fluid" alt=@(Model.ServantList[i].servant.Name) src="@("/images/ServantIcons/" + Model.ServantList[i].servant.Id + ".png")"  />
+                        </label>
+                    </div>
+                </div>
+            }
+        </div>
+        <button id="Gobtn" type="submit" class="btn btn-primary btn-lg float-right">Go</button>
+        <input type="submit" formaction="Roll/Draft" id="Draftbtn" value="Draft" name="Draft" class="btn btn-info my-3 float-right" />
+    </form>
+</div>

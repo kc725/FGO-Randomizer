@@ -1,0 +1,62 @@
+﻿@model List<List<Servant>>
+
+@{
+    ViewData["Title"] = "Draft";
+}
+
+<head>
+    <script language="JavaScript">
+        window.onload = function () {
+            var rows = document.getElementsByName("ServantRow");
+            for (var i = 1; i < rows.length; i++) {
+                rows[i].classList.add("d-none");
+            }
+        }
+
+        var n = 0;
+
+        function btnClick(source) {
+            var rows = document.getElementsByName("ServantRow");
+            rows[n].classList.add("d-none");
+
+            var servant_icon = source.getElementsByTagName("img")[0];
+            var chosenServants = document.getElementsByName("ChosenServant");
+            chosenServants[n].getElementsByTagName("img")[0].src = servant_icon.src;
+
+            n++;
+            rows[n].classList.remove("d-none");
+        }
+    </script>
+    <style>
+        .flex-container {
+            display: flex;
+        }
+    </style>
+</head>
+
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-center">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <div class="row" id="@(i)" name="ServantRow">
+                @for (int j = 0; j < Model[i].Count(); j++)
+                {
+                    <div name="Servant">
+                        <button class="btn btn-default" onclick="btnClick(this);">
+                            <img src="@("/images/ServantIcons/" + Model[i][j].Id + ".png")"/>
+                        </button>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="row pt-3 justify-content-center" name="results">
+        @for (int k = 0; k < Model.Count(); k++)
+        {
+            <div name="ChosenServant">
+                <img src=""/>
+            </div>
+        }
+    </div>
+</div>

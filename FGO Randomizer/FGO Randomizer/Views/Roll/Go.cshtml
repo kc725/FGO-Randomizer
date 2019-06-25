@@ -1,0 +1,22 @@
+﻿@model IEnumerable<FGO_Randomizer.Models.Servant>
+
+@{
+    ViewData["Title"] = "Roll Go";
+}
+
+<h2>Your Random Team</h2>
+
+<div class="container-fluid content-row">
+    <div class="card-deck">
+        @foreach (var servant in Model)
+        {
+            <div class="card h-100">
+                <img class="card-img-top" alt="Missing Image" src="@("/images/ServantIcons/" + servant.Id + ".png")"/>
+                <h5 class="card-title">@(servant.Name)</h5>
+            </div>
+        }
+    </div>
+    <div class="row">
+        <p>To reroll with the same selection, simply refresh the page. You may be asked if you want to resubmit the form, in which case click Continue.</p>
+    </div>
+</div>

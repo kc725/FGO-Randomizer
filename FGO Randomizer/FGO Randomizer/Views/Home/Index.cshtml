@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<head>
+    <script type="text/javascript">
+        window.onload = function () {
+            window.location.href = window.location.href + "Roll";
+        }
+        function relink() {
+            window.location.href = window.location.href + "Roll";
+        }
+    </script>
+    <title>Page Redirection</title>
+</head>
+<body>
+    If you are not redirected automatically, follow this <a onclick="relink()">link.</a>
+</body>
