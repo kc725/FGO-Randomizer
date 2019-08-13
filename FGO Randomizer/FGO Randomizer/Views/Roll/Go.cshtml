@@ -10,7 +10,7 @@
     <div class="card-deck">
         @foreach (var servant in Model)
         {
-            <div class="card h-100">
+            <div class="card align-items-center h-100">
                 <img class="card-img-top" alt="Missing Image" src="@("/images/ServantIcons/" + servant.Id + ".png")"/>
                 <h5 class="card-title">@(servant.Name)</h5>
             </div>

@@ -57,10 +57,32 @@ namespace FGO_Randomizer.Controllers
         public async Task<IActionResult> Go(UserListViewModel ulvm)
         {
             var chosen_servants = await get_chosen_servants(ulvm);
-
-            chosen_servants.Shuffle();
             if (chosen_servants.Count < 6) { return View(chosen_servants); }
-            return View(chosen_servants.GetRange(0, 6));
+
+            var class_advantages = ClassAdvantageOf(ulvm.enemyClass);
+            var results = new List<Servant>();
+
+            if (ulvm.difficulty == 1)
+            {
+                var A = chosen_servants.Where(x => class_advantages.Contains(x.Class)).ToList();
+                A.Shuffle();
+                chosen_servants = chosen_servants.Except(A).ToList();
+                chosen_servants.Shuffle();
+                results = A.GetRange(0, 3).Concat(chosen_servants.GetRange(0, 2)).ToList();
+            }
+            
+            else if (ulvm.difficulty == 3)
+            {
+                results = chosen_servants.Where(x => !class_advantages.Contains(x.Class)).ToList();
+            }
+
+            else
+            {
+                results = chosen_servants;   
+            }
+
+            results.Shuffle();
+            return View(results.GetRange(0,5));
         }
 
         //Draft
@@ -72,11 +94,17 @@ namespace FGO_Randomizer.Controllers
 
             var class_advantages = ClassAdvantageOf(ulvm.enemyClass);
 
-
             List<Servant> A = new List<Servant>(chosen_servants);
-            if (class_advantages.Contains("All"))
+            if (!class_advantages.Contains("All") && ulvm.difficulty != 2)
             {
-                A = A.Where(x => class_advantages.Contains(x.Class)).ToList();
+                if(ulvm.difficulty == 1)
+                {
+                    A = A.Where(x => class_advantages.Contains(x.Class)).ToList();
+                }
+                else
+                {
+                    A = A.Where(x => !class_advantages.Contains(x.Class)).ToList();
+                }
             }
             A.Shuffle();
             A = A.GetRange(0, 4);
@@ -84,9 +112,16 @@ namespace FGO_Randomizer.Controllers
             result.Add(A);
 
             List<Servant> B = new List<Servant>(chosen_servants);
-            if (class_advantages.Contains("All"))
+            if (!class_advantages.Contains("All") && ulvm.difficulty != 2)
             {
-                B = B.Where(x => class_advantages.Contains(x.Class)).ToList();
+                if (ulvm.difficulty == 1)
+                {
+                    B = B.Where(x => class_advantages.Contains(x.Class)).ToList();
+                }
+                else
+                {
+                    B = B.Where(x => !class_advantages.Contains(x.Class)).ToList();
+                }
             }
             B.Shuffle();
             B = B.GetRange(0, 4);
@@ -103,9 +138,16 @@ namespace FGO_Randomizer.Controllers
 
             var misRoleD = missingRole(AB.Concat(C).ToList());
             List<Servant> D = chosen_servants.Where(x => x.Role == misRoleD).ToList();
-            if (class_advantages.Contains("All"))
+            if (!class_advantages.Contains("All") && ulvm.difficulty != 2)
             {
-                D = D.Where(x => class_advantages.Contains(x.Class)).ToList();
+                if (ulvm.difficulty == 1)
+                {
+                    D = D.Where(x => class_advantages.Contains(x.Class)).ToList();
+                }
+                else
+                {
+                    D = D.Where(x => !class_advantages.Contains(x.Class)).ToList();
+                }
             }
             D.Shuffle();
             D = D.GetRange(0, 4);
@@ -114,17 +156,8 @@ namespace FGO_Randomizer.Controllers
 
             chosen_servants.Shuffle();
             List<Servant> E = chosen_servants.GetRange(0, 4);
-            chosen_servants = chosen_servants.Except(E).ToList();
             result.Add(E);
 
-            List<Servant> F = new List<Servant>(chosen_servants);
-            if (class_advantages.Contains("All"))
-            {
-                F = F.Where(x => class_advantages.Contains(x.Class)).ToList();
-            }
-            F.Shuffle();
-            F = F.GetRange(0, 4);
-            result.Add(F);
 
             return View(result);
         }

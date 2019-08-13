@@ -22,6 +22,7 @@
             var servant_icon = source.getElementsByTagName("img")[0];
             var chosenServants = document.getElementsByName("ChosenServant");
             chosenServants[n].getElementsByTagName("img")[0].src = servant_icon.src;
+            chosenServants[n].getElementsByTagName("img")[0].classList.remove("d-none");
 
             n++;
             rows[n].classList.remove("d-none");
@@ -55,7 +56,7 @@
         @for (int k = 0; k < Model.Count(); k++)
         {
             <div name="ChosenServant">
-                <img src=""/>
+                <img class="d-none" src=""/>
             </div>
         }
     </div>

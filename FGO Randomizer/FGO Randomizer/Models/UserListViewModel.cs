@@ -11,6 +11,7 @@ namespace FGO_Randomizer.Models
         public List<ServantChecked> ServantList { get; set; }
         public SelectList Classes { get; set; }
         public string enemyClass { get; set; }
+        public int difficulty { get; set; } = 1;
     }
 
     public class ServantChecked
