@@ -62,7 +62,7 @@ namespace FGO_Randomizer
                         options.UseSqlServer(Configuration.GetConnectionString("ServantContext"))); */
 
             services.AddDbContext<ServantContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("ServantContext")));
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             //services.BuildServiceProvider().GetService<ServantContext>().Database.Migrate();
         }
